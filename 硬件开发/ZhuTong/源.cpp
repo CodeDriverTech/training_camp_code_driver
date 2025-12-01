@@ -1,11 +1,10 @@
 #include<stdio.h>
 int main()
 {
-	int a = 1;
-	while (a < 10)
-	{
-		printf("hh");
-		a++;
-	}
-	return 0;
+	 int i = 0;
+	 for (i =1;i<= 10;i++)
+{
+	 printf("% d", i);
+}
+     return 0;
 }
