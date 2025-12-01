@@ -1,8 +1,11 @@
 #include<stdio.h>
 int main()
 {
-	int ch = getchar();
-	printf("%c\n", ch);
-	putchar(ch);
+	int a = 1;
+	while (a < 10)
+	{
+		printf("hh");
+		a++;
+	}
 	return 0;
 }
