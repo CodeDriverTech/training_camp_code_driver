@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .flex {
+      display: flex;
+      width: 1180px;
+      margin: 20 auto;
+      border: 1px solid blue;
+    }
+
+    .item {
+      flex: 1;
+    }
+
+    .item a {
+      width: 100%;
+      border-radius: 18px;
+      display: block;
+      /* 隐藏圆角 */
+      overflow: hidden;
+    }
+
+    .item a img {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="flex">
+    <div class="item">
+      <a href="#">
+        <img src="../nb.png" alt="">
+      </a>
+    </div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+    <div class="item">5</div>
+  </div>
+
+</body>
+
+</html>

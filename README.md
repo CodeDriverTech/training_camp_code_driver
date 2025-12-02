@@ -90,7 +90,7 @@ PR 是 GitHub 上请求将你的代码**合并到主仓库**的标准流程。�
 1. **[点击这里新建 Issue](https://github.com/CodeDriverTech/training_camp_code_driver/issues/new)**  
 2. 在 **Issue 正文** 中按格式填写（示例）：
    ```text
-   人工智能: ZhangSan
+   -添加成员- 人工智能: ZhangSan
    ```
    > 支持的方向：`人工智能`、`硬件开发`、`网络安全`、`软件开发` 
    ![guide](/images/issue-guide.png) 

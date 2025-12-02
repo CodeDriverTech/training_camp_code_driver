@@ -1,24 +1,44 @@
-name: Wait for Admin Approval
+name: Handle Member Addition Request
 
 on:
   issues:
-    types: [labeled]
+    types: [opened]
 
 jobs:
-  wait-for-approval:
-    if: github.event.label.name == 'add-contributor'
+  handle-add-member:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
-
+      issues: write  # 需要写权限来打标签和评论
     steps:
-      - name: Comment to wait for approval
+      - name: Detect and tag member addition request
         uses: actions/github-script@v7
         with:
           script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `📬 收到你的申请！\n\n正在等待管理员审核，请耐心等待。管理员将通过添加 \`approved\` 标签来批准此请求。`
-            });
+            const issue = context.payload.issue;
+            const number = issue.number;
+            const title = issue.title || '';
+            const body = issue.body || '';
+            const content = (title + '\n' + body).toLowerCase();
+
+            // 检查是否包含 "-添加成员-"（不区分大小写或格式宽松）
+            if (content.includes('-添加成员-')) {
+              // 1. 添加 add-contributor 标签
+              await github.rest.issues.addLabels({
+                issue_number: number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['add-contributor']
+              });
+
+              // 2. 自动评论等待审核
+              await github.rest.issues.createComment({
+                issue_number: number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `📬 收到你的申请！\n\n正在等待管理员审核，请耐心等待。管理员将通过添加 \`approved\` 标签来批准此请求。`
+              });
+
+              console.log('✅ 已自动标记为贡献者申请并评论');
+            } else {
+              console.log('⏭️ 不是成员添加请求，跳过。');
+            }

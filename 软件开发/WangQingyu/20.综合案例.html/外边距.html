@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    [class^="box"] {
+      width: 200px;
+      height: 200px;
+      background-color: pink;
+    }
+
+    .box1 {
+      margin: 20px;
+    }
+
+    span {
+      /* 长和宽对行内元素没用 */
+      width: 100px;
+      height: 100px;
+      background-color: aquamarine;
+      margin: 20px;
+    }
+
+    p {
+      background-color: red;
+      text-align: center;
+      /* 使行内元素水平居中可以嵌套块级元素 */
+    }
+
+    .father {
+      width: 150px;
+      height: 150px;
+      background-color: red;
+      border: 1px solid black;
+    }
+
+    .son {
+      width: 80px;
+      height: 80px;
+      background-color: aquamarine;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box1">我是盒子1</div>
+  <div class="box2">我是盒子2</div>
+  <span>我是span</span>
+  <span>我是span2</span>
+  <p><span>123</span></p>
+  <div class="father">
+    <div class="son"></div>
+  </div>
+
+</body>
+
+</html>
