@@ -7,14 +7,14 @@ int main()
 	}
 	if (num % 2 == 1)
 	{
-		printf("����\n");
+		printf("奇数\n");
 	}
 	else;
 	{
-		printf("ż��\n");
+		printf("偶数\n");
 	}
 	return 0;
-}
+}          //判断数字的奇偶性
 int main()
 {
 	int i = 1;
@@ -24,5 +24,17 @@ int main()
 		printf("%d " , i);
 		i++;
 	}
+	return 0;
+}
+
+int  main()
+{
+	int a=1;
+do
+{
+printf("%d",a);
+a++;
+}
+	while(a <=10)
 	return 0;
 }
