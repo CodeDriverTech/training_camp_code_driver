@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .box {
+      width: 249;
+      height: 100px;
+      /* background: pink; */
+      /* background: linear-gradient(to top, red, pink); */
+      background: linear-gradient(90deg, red 30%, pink 70%);
+      /* 90deg是90度的意思 */
+    }
+
+    .box2 {
+      font-size: 30px;
+      font-weight: 700;
+      background: linear-gradient(90deg, red 30%, pink 70%);
+      /* -webkit-是前缀，兼容性写法 */
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      /* 文字渐变效果 */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box"></div>
+  <div class="box2">渐变文字</div>
+
+</body>
+
+</html>

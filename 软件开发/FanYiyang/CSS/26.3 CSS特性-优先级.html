@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS特性-优先级</title>
+    <style>
+        /* 规则:优先级高的样式生效 */
+        /* 公式：通配符选择器<标签选择器<类选择器<id选择器<行内样式<!important */
+        /* 选择器选中标签的范围越大，优先级越低 */
+
+        div {
+            color: green;
+        }
+
+        * {
+            color: red !important;
+        }
+
+        .box {
+            color: blue;
+        }
+
+        #test {
+            color: orange;
+        }
+    </style>
+</head>
+<body>
+    <div class="box" id="test" style="color: purple;">div bq </div>
+</body>
+</html>

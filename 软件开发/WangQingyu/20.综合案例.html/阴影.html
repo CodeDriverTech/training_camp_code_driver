@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>盒子阴影</title>
+  <style>
+    .box {
+      width: 249px;
+      height: 100px;
+      background: linear-gradient(90deg, red 30%, pink 70%);
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+      /* 第一个是x第二个是y第三个是模糊半径第四个是扩散半径 */
+      transition: all 3s;
+      /* 阴影过渡 */
+
+    }
+
+    .box:hover {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      width: 220px;
+      height: 220px;
+      /* 鼠标悬停时，阴影显示 */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box"></div>
+
+</body>
+
+</html>

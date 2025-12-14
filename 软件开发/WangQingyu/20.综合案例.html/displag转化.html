@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>displag转化</title>
+  <style>
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .dis {
+      width: 234px;
+      height: 460px;
+      background-color: #9d9d9d;
+      margin: 0 auto;
+      font-size: 14px;
+      padding: 20px 0;
+    }
+
+    .dis ul li a:hover {
+      background-color: #ff6700;
+
+    }
+
+    .dis ul li a {
+      /* 行内元素转化为块级元素 */
+      display: block;
+      height: 42px;
+      line-height: 42px;
+      color: #fff;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dis">
+    <ul>
+      <li><a href="#">手机</a></li>
+      <li><a href="#">平板</a></li>
+      <li><a href="#">笔记本</a></li>
+      <li><a href="#">台式机</a></li>
+      <li><a href="#">其他</a></li>
+    </ul>
+  </div>
+
+</body>
+
+</html>
