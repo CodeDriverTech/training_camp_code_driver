@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻列表</title>
+    <style>
+        /* 清除默认格式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        li {
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .news {
+            /* 上下100px  左右auto */
+            margin: 100px auto;
+            width: 360px;
+            height: 200px;
+            /* background-color: pink; */
+            
+        }
+
+        .news .hd {
+            display: block;
+            height: 34px;
+            background-color: #eee;
+            border: 1px solid #dbdee1;
+            border-left: 0;
+        }
+
+        .news .hd a {
+            margin-top: -1px;
+            display: block;
+            border-top: 3px solid #ff8400;
+            border-right: 1px solid #dbdee1;
+            width: 48px;
+            height: 34px;
+            background-color: #fff;
+
+            text-align: center;
+            line-height: 32px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .news .bd {
+            padding: 5px;
+            
+        }
+        
+        .news .bd li {
+            padding-left: 15px;
+            background-image: url(./57.2.png);
+            background-repeat: no-repeat;
+            background-position: 0 center;
+            
+        }
+
+        .news .bd a {
+            padding-left: 20px;
+            background: url(./57.1.png) no-repeat 0 center;
+            background-size: 14px;
+
+            /* 文字 */
+            font-size: 12px;
+            color: #666;
+            line-height: 24px;
+        }
+
+        .news .bd li a:hover {
+            color: #ff8400;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="news">
+        <div class="hd"><a href="#">新闻</a></div>
+        <div class="bd">
+            <ul>
+                <li><a href="#">111111111111111111111111111111111</a></li>
+                <li><a href="#">2222222222222</a></li>
+                <li><a href="#">3333333333333</a></li>
+                <li><a href="#">444444444444444444</a></li>
+                <li><a href="#">555555555555555555555555</a></li>
+                <li><a href="#">6666666666666</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

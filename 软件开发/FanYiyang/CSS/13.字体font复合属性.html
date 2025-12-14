@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>font复合属性</title>
+    <style>
+        /* 文字倾斜，文字加粗，字体大小30px，行高，楷体 */
+        div {
+            /* font: italic 700 30px/2 楷体; */
+            /* font属性必须写字号和字体，否则不生效 */
+            font: 30px 楷体;
+            /* 错误示范：
+            font:  italic 700 30px/2 ; */
+        }
+    </style>
+</head>
+<body>
+    <div>测试 font 属性</div>
+</body>
+</html>

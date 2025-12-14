@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优先级-叠加计算规则</title>
+    <style>
+        /* !important 权重最高 , 继承权重最低 */
+        /* (行内样式,id选择器,类选择器,标签选择器)从左到右比较个数，优先级高到低 */
+        /* (0, 0, 2, 1) */
+        .c1 .c2 div {
+            color: blue;
+        }
+        /* (0, 1, 0, 1) */
+        div #box3 {
+            color: green;
+        }
+        /* (0, 1, 1, 0) */
+        #box1 .c3 {
+            color: orange;
+        }
+    </style>
+</head>
+<body>
+    <div id="box1" class="c1">
+        <div id="box2" class="c2">
+            <div id="box3" class="c3">
+                这行文本是什么颜色？
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伪元素选择器</title>
+    <style>
+        div {
+            width: 300px;
+            height: 300px;
+            background-color: pink;
+        }
+
+        /* before创建出的显示模式是行内显示模式 */
+        div::before {
+            /* 必须设置content，如果没有就不生效 */
+            content: "老鼠";
+            
+            width: 100px;
+            height: 100px;
+            background-color: brown;
+            display: block;
+        }
+
+        div::after {
+            content: "大米";
+
+            width: 100px;
+            height: 100px;
+            background-color: orange;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div>爱</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emmet写法</title>
+    <style>
+        div {
+            width: 500px;
+            height: 200px;
+            width: 500px;/* w500 */
+            background-color: #fff;/* bgc */
+            /* w500 + h200 + bgc */
+             width: 500px;
+             height: 200px;
+             background-color: #fff;
+        }
+    </style>
+    
+</head>
+<body>
+    <p class="box">p.box</p>
+    <div class="box">div.box</div>
+    <p id="box">p#box</p>
+    <!-- 同级别 如，div+p -->
+     <div></div>
+     <p></p>
+    <!-- 父子级 如，div>p -->
+     <div>
+        <p></p>
+     </div>
+    <!-- 同时生成多个标签 如，span*3 -->
+     <span></span><span></span><span></span>
+    <!-- 标签加内容 如，div{111} -->
+     <div>111</div>
+    <!-- div>p{$}*3 -->
+     <div>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+     </div>
+</body>
+</html>

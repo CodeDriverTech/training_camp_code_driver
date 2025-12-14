@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结构伪类选择器-公式用法</title>
+    <style>
+        /* 偶数 */
+        /* li:nth-child(2n) {
+            background-color: green;
+        } */
+
+        /* 奇数 */
+        /* li:nth-child(2n+1) {
+            background-color: green;
+        } */
+
+        /* 倍数 */
+        /* li:nth-child(5n) {
+            background-color: green;
+        } */
+
+        /* 第5个以后的标签，包括第五个，n 从0开始算数 */
+        /* li:nth-child(n+5) {
+            background-color: green;
+        } */
+
+        /* 第5个以前的标签，包括第五个，n 从0开始算数 */
+        li:nth-child(-n+5) {
+            background-color: green;
+        }
+
+    </style>
+</head>
+<body>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+        <li>8</li>
+        <li>9</li>
+        <li>10</li>
+    </ul>
+</body>
+</html>
