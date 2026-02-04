@@ -1,0 +1,55 @@
+{
+  "providers": {
+    "anthropic_proxy": {
+      "base_url": "https://api.singinggirl.com/v1/messages",
+      "api_key": "env:ANTHROPIC_PROXY_KEY",
+      "timeout": 60,
+      "auth_header": "Authorization",
+      "auth_scheme": "Bearer"
+    },
+    "gemini_proxy": {
+      "base_url": "https://api.singinggirl.com/v1beta/models",
+      "api_key": "env:GEMINI_PROXY_KEY",
+      "timeout": 60,
+      "auth_header": "Authorization",
+      "auth_scheme": "Bearer"
+    },
+    "openai_proxy": {
+      "base_url": "https://api.singinggirl.com/v1/responses",
+      "api_key": "env:OPENAI_PROXY_KEY",
+      "timeout": 60,
+      "auth_header": "Authorization",
+      "auth_scheme": "Bearer"
+    },
+    "qwen_proxy": {
+      "base_url": "env:QWEN_API_BASE_URL",
+      "api_key": "env:QWEN_API_KEY",
+      "timeout": 60,
+      "auth_header": "Authorization",
+      "auth_scheme": "Bearer",
+      "request_format": "openai_chat"
+    }
+  },
+  "models": {
+    "qwen3-max": {
+      "provider": "qwen_proxy",
+      "remote_model": "qwen3-max"
+    },
+    "deepseek-r1-distill-qwen-3": {
+      "provider": "qwen_proxy",
+      "remote_model": "deepseek-r1-distill-qwen-3"
+    },
+    "qwq-plus": {
+      "provider": "qwen_proxy",
+      "remote_model": "qwq-plus"
+    },
+    "qwen2.5-vl-32b-instruct": {
+      "provider": "qwen_proxy",
+      "remote_model": "qwen2.5-vl-32b-instruct"
+    },
+    "deepseek-v3.1": {
+      "provider": "qwen_proxy",
+      "remote_model": "deepseek-v3.1"
+    }
+  }
+}

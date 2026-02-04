@@ -1,0 +1,33 @@
+{
+    "editor.formatOnPaste": false,
+    "editor.autoIndentOnPaste": false,
+    "editor.codeActionWidget.includeNearbyQuickFixes": true,
+    "workbench.view.showQuietly": {
+        "workbench.panel.output": true
+    },
+    "workbench.view.alwaysShowHeaderActions": true,
+    "editor.codeActionWidget.showHeaders": true,
+    "workbench.remoteIndicator.showExtensionRecommendations": true,
+    "chat.agentSessionsViewLocation": "disabled",
+    "editor.suggest.showStatusBar": true,
+    "debug.showInStatusBar": "always",
+    "debug.showSubSessionsInToolBar": true,
+    "npm.enableRunFromFolder": false,
+    "diffEditor.renderGutterMenu": true,
+    "workbench.layoutControl.type": "both",
+    "terminal.integrated.allowMnemonics": false,
+    "testing.defaultGutterClickAction": "run",
+    "python.REPL.sendToNativeREPL": false,
+    "workbench.editor.highlightModifiedTabs": false,
+    "workbench.editor.pinnedTabsOnSeparateRow": false,
+    "workbench.editor.scrollToSwitchTabs": false,
+    "workbench.editor.showTabs": "multiple",
+    "workbench.editor.wrapTabs": false,
+    "zenMode.showTabs": "multiple",
+    "debug.closeReadonlyTabsOnEnd": false,
+    "editor.stickyTabStops": false,
+    "workbench.editor.pinnedTabSizing": "normal",
+    "editor.tabFocusMode": false,
+    "workbench.editor.showTabIndex": true,
+    "workbench.editor.enablePreviewFromQuickOpen": false
+}

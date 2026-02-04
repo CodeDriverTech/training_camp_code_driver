@@ -1,0 +1,40 @@
+{
+  "providers": {
+    "openai": {
+      "base_url": "https://api.openai.com/v1/chat/completions",
+      "api_key": "env:OPENAI_API_KEY",
+      "timeout": 60,
+      "auth_header": "Authorization",
+      "auth_scheme": "Bearer",
+      "body": {
+        "temperature": 0.7
+      }
+    },
+    "aliyun": {
+      "base_url": "https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1",
+      "api_key": "env:ALIYUN_API_KEY",
+      "timeout": 45,
+      "headers": {
+        "X-DashScope-Async": "disable"
+      }
+    }
+  },
+  "models": {
+    "Qwen3": {
+      "provider": "aliyun",
+      "remote_model": "qwen-plus"
+    },
+    "GPT4": {
+      "provider": "openai",
+      "remote_model": "gpt-4o"
+    },
+    "Claude3": {
+      "provider": "openai",
+      "remote_model": "claude-3-5-sonnet"
+    },
+    "CustomVendorModel": {
+      "provider": "aliyun",
+      "remote_model": "dashscope-bailian"
+    }
+  }
+}

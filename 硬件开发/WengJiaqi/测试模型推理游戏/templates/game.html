@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谁是卧底 - 模型推理能力测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            text-align: center;
+            padding: 25px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            max-width: 820px;
+            margin: 0 auto;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 180px);
+            max-height: 900px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 18px 0 25px;
+            flex-wrap: wrap;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        .btn {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        .btn:hover::after { transform: translateX(100%); }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+        .btn:disabled::after { display: none; }
+        .btn-start { background: linear-gradient(45deg, #0ea5e9, #0284c7); color: #fff; }
+        .btn-pause { background: linear-gradient(45deg, #f59e0b, #d97706); color: #fff; }
+        .btn-continue { background: linear-gradient(45deg, #10b981, #047857); color: #fff; }
+        .btn-restart { background: linear-gradient(45deg, #ef4444, #b91c1c); color: #fff; }
+        .btn-evaluate { background: linear-gradient(45deg, #8b5cf6, #7c3aed); color: #fff; }
+        .btn-save { background: linear-gradient(45deg, #ec4899, #db2777); color: #fff; }
+        .btn-report { background: linear-gradient(45deg, #f97316, #c2410c); color: #fff; }
+        .btn-secondary { background: linear-gradient(45deg, #38bdf8, #0ea5e9); color: #fff; }
+        .game-area {
+            background: rgba(15, 23, 42, 0.92);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .game-header {
+            background: rgba(30, 41, 59, 0.95);
+            padding: 16px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+        .round-info {
+            font-size: 1.35rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #ef4444; box-shadow: 0 0 6px #ef4444;
+        }
+        .status-dot.active { background: #10b981; box-shadow: 0 0 6px #10b981; }
+        .status-dot.paused { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+        .chat-container {
+            flex: 1; min-height: 0; overflow-y: auto;
+            padding: 25px; display: flex; flex-direction: column; gap: 22px;
+            background: rgba(7, 17, 34, 0.82);
+        }
+        .message {
+            background: rgba(30, 41, 59, 0.78);
+            border-radius: 18px;
+            padding: 20px 25px;
+            max-width: 90%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+            border-left: 4px solid #3b82f6;
+        }
+        .message.analysis { background: rgba(38, 28, 54, 0.85); border-left-color: #a78bfa; }
+        .message.voting { background: rgba(30, 35, 50, 0.92); border-left-color: #fbbf24; max-width: 96%; }
+        .message.system { background: rgba(22, 35, 52, 0.9); border-left-color: #10b981; margin: 10px auto; width: fit-content; }
+        .message-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 600; font-size: 1.05rem; }
+        .model-name { color: #60a5fa; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        .model-name span { background: rgba(0, 0, 0, 0.35); width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; }
+        .timestamp { color: #94a3b8; font-size: 0.92rem; background: rgba(0, 0, 0, 0.2); padding: 2px 8px; border-radius: 20px; }
+        .message-content { line-height: 1.65; font-size: 1.05rem; color: #e2e8f0; white-space: pre-wrap; }
+        .evaluation-section {
+            background: rgba(20, 28, 45, 0.92);
+            border-radius: 22px;
+            padding: 35px;
+            margin-top: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .section-title {
+            font-size: 2.1rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #8b5cf6;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 800;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 4px;
+            background: linear-gradient(to right, #a78bfa, #8b5cf6, #7c3aed);
+            border-radius: 2px;
+        }
+        .evaluation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+        .evaluation-card {
+            background: rgba(30, 41, 59, 0.88);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .evaluation-title { font-size: 1.3rem; margin-bottom: 16px; color: #a78bfa; display: flex; gap: 12px; align-items: center; }
+        .evaluation-score { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .evaluation-desc { color: #cbd5e1; line-height: 1.6; min-height: 48px; margin-top: 8px; }
+        .history-section {
+            margin-top: 35px;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .history-section h2 { font-size: 1.6rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .badge { font-size: 0.9rem; padding: 4px 12px; border-radius: 999px; background: rgba(96, 165, 250, 0.2); color: #93c5fd; }
+        .history-list { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .history-card { background: rgba(30, 41, 59, 0.85); border-radius: 14px; padding: 16px 18px; border: 1px solid rgba(255, 255, 255, 0.06); }
+        .state-section { margin-top: 35px; background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        pre { background: rgba(0, 0, 0, 0.6); padding: 16px; border-radius: 12px; color: #e2e8f0; overflow-x: auto; max-height: 360px; }
+        .scroll-to-bottom {
+            position: fixed; bottom: 35px; right: 35px;
+            background: rgba(30, 41, 59, 0.92);
+            border: 2px solid #3b82f6;
+            color: #60a5fa;
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; opacity: 0; transition: all 0.35s ease; z-index: 20;
+        }
+        .scroll-to-bottom.visible { opacity: 1; }
+        .hint { color: #94a3b8; font-size: 0.95rem; }
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            h1 { font-size: 2.2rem; }
+            .controls { flex-direction: column; }
+            .game-container { height: auto; }
+            .game-header { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 谁是卧底 - 模型推理能力测试平台</h1>
+            <p class="subtitle">自动调度多家模型参与“谁是卧底”，实时记录描述/分析/投票阶段，并支持多次采样、历史评估与最终报告汇总。</p>
+        </header>
+
+        <div class="game-container">
+            <div class="controls">
+                <button id="startBtn" class="btn btn-start"><span>▶</span> 开始游戏</button>
+                <button id="pauseBtn" class="btn btn-pause" disabled><span>⏸</span> 暂停刷新</button>
+                <button id="continueBtn" class="btn btn-continue" disabled><span>▶</span> 继续刷新</button>
+                <button id="restartBtn" class="btn btn-restart" disabled><span>⟳</span> 重启游戏</button>
+                <button id="evaluateBtn" class="btn btn-evaluate" disabled><span>🔍</span> 单局评估</button>
+                <button id="saveBtn" class="btn btn-save" disabled><span>💾</span> 仅刷新历史</button>
+                <button id="reportBtn" class="btn btn-report" disabled><span>📊</span> 最终报告</button>
+            </div>
+
+            <div class="game-area">
+                <div class="game-header">
+                    <div class="round-info">第 <span id="roundNumber">{{ state.round }}</span> 轮 • 剩余玩家 <span id="remainingPlayers">{{ state.alive | length }}</span></div>
+                    <div class="status-bar">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="gameStatus">{{ '正派胜利' if state.winner == 'civilians' else (state.winner or '等待开始') }}</span>
+                    </div>
+                </div>
+                <div class="chat-container" id="chatBox">
+                    <div class="message system">
+                        <div class="message-header">
+                            <div class="model-name"><span>SYS</span> 系统提示</div>
+                            <div class="timestamp">--:--:--</div>
+                        </div>
+                        <div class="message-content">欢迎使用推理测试平台。点击“开始游戏”即可自动完成描述-分析-投票全流程。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="evaluation-section" id="evaluationSection">
+            <h2 class="section-title">模型能力多维度评估报告</h2>
+            <div class="evaluation-grid">
+                <div class="evaluation-card">
+                    <div class="evaluation-title"><span>🎯</span> 逻辑一致性</div>
+                    <div class="evaluation-score" id="score-logic">-</div>
+                    <div class="evaluation-desc" id="desc-logic">等待生成</div>
+                </div>
+                <div class="evaluation-card">
+                    <div class="evaluation-title"><span>🤝</span> 社交智能</div>
+                    <div class="evaluation-score" id="score-social">-</div>
+                    <div class="evaluation-desc" id="desc-social">等待生成</div>
+                </div>
+                <div class="evaluation-card">
+                    <div class="evaluation-title"><span>♟️</span> 策略思维</div>
+                    <div class="evaluation-score" id="score-strategy">-</div>
+                    <div class="evaluation-desc" id="desc-strategy">等待生成</div>
+                </div>
+                <div class="evaluation-card">
+                    <div class="evaluation-title"><span>🧭</span> 元认知</div>
+                    <div class="evaluation-score" id="score-meta">-</div>
+                    <div class="evaluation-desc" id="desc-meta">等待生成</div>
+                </div>
+            </div>
+            <div class="controls" style="gap:16px; margin-top:28px; background: transparent; box-shadow:none;">
+                <button id="samplesBtn" class="btn btn-secondary"><span>♻</span> 多次采样</button>
+                <button id="refreshHistoryBtn" class="btn btn-start"><span>🔄</span> 刷新历史</button>
+                <button id="clearHistoryBtn" class="btn btn-restart"><span>🗑</span> 清空历史</button>
+            </div>
+        </div>
+
+        <section class="history-section">
+            <h2>评估历史 <span class="badge" id="run-count">0 条</span></h2>
+            <div id="run-history" class="history-list">
+                <p class="hint">暂无记录</p>
+            </div>
+        </section>
+
+        <section class="state-section">
+            <h2>最新状态 JSON</h2>
+            <pre id="state-json">{{ state | tojson(indent=2) }}</pre>
+        </section>
+    </div>
+
+    <button class="scroll-to-bottom" id="scrollToBottom">↓</button>
+
+    <script>
+        const initialState = {{ state | tojson | safe }};
+        let pollTimer = null;
+        let currentUIState = 'initial';
+        let autoScroll = true;
+        let latestState = initialState;
+        let currentModelMap = buildModelMap(initialState);
+        const transientSystemMessages = [];
+
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const continueBtn = document.getElementById('continueBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const evaluateBtn = document.getElementById('evaluateBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const reportBtn = document.getElementById('reportBtn');
+        const samplesBtn = document.getElementById('samplesBtn');
+        const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const chatBox = document.getElementById('chatBox');
+        const scrollBtn = document.getElementById('scrollToBottom');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            bindEvents();
+            updateStateDisplay(initialState);
+            setUIState(initialState.winner ? 'ended' : 'initial');
+            refreshRunHistory();
+            startPolling();
+        });
+
+        function bindEvents() {
+            startBtn.addEventListener('click', startGame);
+            pauseBtn.addEventListener('click', () => setUIState('paused'));
+            continueBtn.addEventListener('click', () => setUIState('playing'));
+            restartBtn.addEventListener('click', resetGame);
+            evaluateBtn.addEventListener('click', generateSingleReport);
+            saveBtn.addEventListener('click', refreshRunHistory);
+            reportBtn.addEventListener('click', generateFinalReport);
+            samplesBtn.addEventListener('click', runSamples);
+            refreshHistoryBtn.addEventListener('click', refreshRunHistory);
+            clearHistoryBtn.addEventListener('click', clearRunHistory);
+            chatBox.addEventListener('scroll', handleScrollIndicator);
+            scrollBtn.addEventListener('click', () => {
+                chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+            });
+        }
+
+        function setUIState(state) {
+            currentUIState = state;
+            const cfg = {
+                initial: { start:false, pause:true, cont:true, restart:true, eval:true, save:true, report:true },
+                playing: { start:true, pause:false, cont:true, restart:false, eval:true, save:false, report:false },
+                paused: { start:true, pause:true, cont:false, restart:false, eval:true, save:false, report:false },
+                ended: { start:false, pause:true, cont:true, restart:false, eval:false, save:false, report:false }
+            }[state] || {};
+            startBtn.disabled = cfg.start;
+            pauseBtn.disabled = cfg.pause;
+            continueBtn.disabled = cfg.cont;
+            restartBtn.disabled = cfg.restart;
+            evaluateBtn.disabled = cfg.eval;
+            saveBtn.disabled = cfg.save;
+            reportBtn.disabled = cfg.report;
+            const dot = document.getElementById('statusDot');
+            dot.className = 'status-dot ' + (state === 'playing' ? 'active' : state === 'paused' ? 'paused' : '');
+        }
+
+        function startPolling() {
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = setInterval(() => {
+                if (currentUIState !== 'paused') refreshState();
+            }, 5000);
+        }
+
+        async function refreshState() {
+            const resp = await fetch('/api/state');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            updateStateDisplay(data);
+        }
+
+        async function startGame() {
+            setUIState('playing');
+            enqueueSystemMessage('系统已启动自动对局，正在等待模型描述。', '系统播报');
+            try {
+                const resp = await fetch('/start_auto_game', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                if (!resp.ok) throw new Error('start failed');
+                const data = await resp.json();
+                if (!data.state) throw new Error(data.message || '启动失败');
+                updateStateDisplay(data.state);
+                renderEvaluation(data.evaluation || null);
+                await refreshRunHistory();
+                setUIState('ended');
+                enqueueSystemMessage('本局自动推理完成，可查看评估或继续采样。', '系统播报');
+            } catch (err) {
+                enqueueSystemMessage('模型响应稍慢，系统将缓冲等待，请稍后重试。', '系统播报');
+                setUIState('initial');
+                console.warn(err);
+            }
+        }
+
+        async function resetGame() {
+            try {
+                const resp = await fetch('/reset_game', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                if (!resp.ok) throw new Error('reset failed');
+                const data = await resp.json();
+                if (!data.state) throw new Error(data.message || '重置失败');
+                updateStateDisplay(data.state);
+                setUIState('playing');
+                enqueueSystemMessage('已发起新一局，等待描述阶段开始。', '系统播报');
+            } catch (err) {
+                enqueueSystemMessage('重置暂未成功，请稍后再试。', '系统播报');
+                console.warn(err);
+            }
+        }
+
+        async function runSamples() {
+            const raw = prompt('采样次数（1-20）', '3');
+            if (raw === null) return;
+            const samples = parseInt(raw, 10);
+            enqueueSystemMessage(`开始批量采样（${samples} 局），请稍候。`, '系统播报');
+            try {
+                const resp = await fetch('/run_samples', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ samples })
+                });
+                if (!resp.ok) throw new Error('run samples failed');
+                const data = await resp.json();
+                if (data.status !== 'ok') throw new Error(data.message || '采样失败');
+                await refreshRunHistory();
+                enqueueSystemMessage(`采样完成：${data.run_count} 局结果已加入历史。`, '系统播报');
+            } catch (err) {
+                enqueueSystemMessage('采样暂未完成，稍后再试。', '系统播报');
+                console.warn(err);
+            }
+        }
+
+        async function generateFinalReport() {
+            const resp = await fetch('/generate_final_report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: 'qwen3-max' })
+            });
+            const data = await resp.json();
+            if (data.report) {
+                alert(data.report);
+            } else {
+                enqueueSystemMessage(data.message || '最终报告生成失败，请稍后再试。', '系统播报');
+            }
+        }
+
+        async function generateSingleReport() {
+            const resp = await fetch('/generate_report', { method: 'POST' });
+            const data = await resp.json();
+            if (data.report) {
+                alert(data.report);
+            } else {
+                enqueueSystemMessage(data.message || '报告生成失败，请稍后再试。', '系统播报');
+            }
+        }
+
+        async function refreshRunHistory() {
+            const resp = await fetch('/api/run_history');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            renderRunHistory(data.runs || []);
+        }
+
+        async function clearRunHistory() {
+            if (!confirm('确认清空历史记录？')) return;
+            const resp = await fetch('/api/clear_history', { method: 'POST' });
+            const data = await resp.json();
+            if (data.status === 'ok') renderRunHistory([]);
+        }
+
+        function renderRunHistory(runs) {
+            const container = document.getElementById('run-history');
+            const badge = document.getElementById('run-count');
+            container.innerHTML = '';
+            badge.textContent = `${runs.length} 条`;
+            if (!runs.length) {
+                container.innerHTML = '<p class="hint">暂无记录</p>';
+                return;
+            }
+            runs.slice().reverse().forEach((run) => {
+                const div = document.createElement('div');
+                div.className = 'history-card';
+                const scores = run.evaluation || {};
+                const pick = (key) => scores[key]?.score ?? '-';
+                div.innerHTML = `
+                    <strong>${new Date(run.ts * 1000).toLocaleString()} · ${run.run_id || 'run'}</strong>
+                    <div class="hint">胜者：${run.winner || '未知'} · 逻辑 ${pick('logic_consistency')} · 社交 ${pick('social_intelligence')} · 策略 ${pick('strategic_thinking')} · 元认知 ${pick('meta_cognition')}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateStateDisplay(data) {
+            const modelMap = buildModelMap(data);
+            latestState = data;
+            currentModelMap = modelMap;
+            document.getElementById('roundNumber').textContent = data.round;
+            document.getElementById('remainingPlayers').textContent = data.alive?.length || 0;
+            document.getElementById('gameStatus').textContent = data.winner ? (data.winner === 'civilians' ? '正派胜利' : data.winner) : '进行中/等待开始';
+            document.getElementById('state-json').textContent = JSON.stringify(data, null, 2);
+            renderChat(data, modelMap);
+            if (data.evaluation) renderEvaluation(data.evaluation);
+        }
+
+        function renderChat(data, modelMap) {
+            const entries = [];
+            const push = (items, phase) => (items || []).forEach((it) => entries.push({ phase, ...it }));
+            push(data.descriptions, '描述');
+            push(data.analyses, '分析');
+            push(data.votes, '投票');
+            const systemEntries = (data.system_messages || []).map((msg) => ({
+                ...msg,
+                model_id: 'system',
+                phase: msg.phase || '系统播报',
+                isSystem: true,
+            }));
+            const transient = transientSystemMessages.map((msg) => ({
+                ...msg,
+                model_id: 'system',
+                phase: msg.phase || '系统播报',
+                isSystem: true,
+                transient: true,
+            }));
+            entries.push(...systemEntries, ...transient);
+            entries.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+            chatBox.innerHTML = '';
+            if (!entries.length) {
+                chatBox.innerHTML = '<div class="message system"><div class="message-header"><div class="model-name"><span>SYS</span> 系统提示</div><div class="timestamp">--:--:--</div></div><div class="message-content">暂无对话记录</div></div>';
+                return;
+            }
+            entries.forEach((entry) => {
+                const isSystem = entry.model_id === 'system' || entry.isSystem;
+                const div = document.createElement('div');
+                let cls = 'message';
+                if (isSystem) {
+                    cls += ' system';
+                } else if (entry.phase === '分析') {
+                    cls += ' analysis';
+                } else if (entry.phase === '投票') {
+                    cls += ' voting';
+                }
+                div.className = cls;
+                const name = isSystem ? (entry.phase || '系统提示') : (modelMap[entry.model_id] || entry.model_id);
+                const badge = isSystem ? 'SYS' : (name || 'M').slice(0, 1).toUpperCase();
+                const ts = entry.timestamp ? new Date(entry.timestamp * 1000).toLocaleTimeString() : '--:--:--';
+                const content = !isSystem && entry.phase === '投票' ? `票给 ${entry.payload}` : (entry.payload || '');
+                div.innerHTML = `
+                    <div class="message-header">
+                        <div class="model-name"><span>${badge}</span>${name}</div>
+                        <div class="timestamp">${ts}</div>
+                    </div>
+                    <div class="message-content">${content}</div>
+                `;
+                chatBox.appendChild(div);
+            });
+            if (autoScroll) chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function renderEvaluation(evaluation) {
+            const map = {
+                logic_consistency: ['score-logic', 'desc-logic'],
+                social_intelligence: ['score-social', 'desc-social'],
+                strategic_thinking: ['score-strategy', 'desc-strategy'],
+                meta_cognition: ['score-meta', 'desc-meta']
+            };
+            Object.entries(map).forEach(([key, [scoreId, descId]]) => {
+                const metric = evaluation[key];
+                document.getElementById(scoreId).textContent = metric ? (metric.score ?? '-').toString() : '-';
+                document.getElementById(descId).textContent = metric?.detail || '—';
+            });
+        }
+
+        function handleScrollIndicator() {
+            const nearBottom = chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 60;
+            autoScroll = nearBottom;
+            scrollBtn.classList.toggle('visible', !nearBottom);
+        }
+
+        function enqueueSystemMessage(content, phase = '系统提示') {
+            transientSystemMessages.push({ payload: content, phase, timestamp: Date.now() / 1000 });
+            if (transientSystemMessages.length > 8) transientSystemMessages.shift();
+            renderChat(latestState, currentModelMap);
+        }
+
+        function buildModelMap(data) {
+            const map = {};
+            (data.models || []).forEach((m) => {
+                if (m?.identifier) map[m.identifier] = m.name || m.identifier;
+            });
+            return map;
+        }
+    </script>
+</body>
+</html>
